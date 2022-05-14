@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 var mongo = require('./config/database');
-const loadEnv = require('./env');
+const loadEnv = require('./config/env');
 
 loadEnv.get();
 
@@ -18,8 +18,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-let database = mongo.connect(
-  `process.env.MONGO_DB_HOST:process.env.MONGO_DB_PORT`);
+// let database = mongo.connect(
+//   mountDbUri(process.env.MONGO_DB_HOST,process.env.MONGO_DB_PORT));
 
 app.use(cors());
 app.use(logger('dev'));
@@ -34,12 +34,12 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function (_req, _res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res, _next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
