@@ -14,7 +14,7 @@ const env = require('./../config/env');
  */
 env.get();
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT);
 app.set('port', port);
 
 /**
@@ -95,3 +95,8 @@ function onListening() {
     'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+module.exports = {
+  server,
+  port: process.env.PORT
+};
