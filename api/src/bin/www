@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Module dependencies.
@@ -14,7 +13,7 @@ const env = require('./../config/env');
  */
 env.get();
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT);
 app.set('port', port);
 
 /**
@@ -73,12 +72,10 @@ function onError(error) {
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
+      throw error;
     case 'EADDRINUSE':
       console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
+      throw error;
     default:
       throw error;
   }
@@ -95,3 +92,8 @@ function onListening() {
     'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+module.exports = {
+  server,
+  port: process.env.PORT
+};
