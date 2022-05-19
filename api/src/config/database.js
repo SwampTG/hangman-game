@@ -5,10 +5,7 @@ loadEnv.get();
 
 module.exports = {
     connect: (dbUri) => {
-        return mongoose.createConnection(dbUri, {
-            useMongoClient: true,
-            user: process.env.MONGO_DB_USERNAME,
-            pass: process.env.MONGO_DB_PASSWORD
-        })
+        return mongoose.createConnection(dbUri);
     },
+    mountDbUri: (host, port, dbName) => `mongodb://${host}:${port}/${dbName}`,
 }
