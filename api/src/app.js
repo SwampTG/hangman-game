@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
-var mongo = require('./config/database');
+const db = require('./config/database');
 const loadEnv = require('./config/env');
 
 loadEnv.get();
@@ -13,26 +13,13 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-const dbHost = process.env.MONGO_DB_HOST;
-const dbPort = process.env.MONGO_DB_PORT;
-const dbName = process.env.MONGO_DB_DATABASE;
 
-console.log(mongo.mountDbUri(dbHost, dbPort, ''));
-
-mongo
-	.connect(
-		mongo.mountDbUri(dbHost, dbPort, '') +
-			'?directConnection=true&serverSelectionTimeoutMS=2000'
-	)
-	.asPromise()
-	.then(async (conn) => {
-    console.log('Connection state: ', conn.readyState);
-    const collection = await conn.collection(process.env.MONGO_DB_DATABASE);
-    console.log('db connect: ', collection.collectionName);
-	});
-
+// const setModels = (collection) => {
+// 	models.saveModels(collection);
+// };
 
 // view engine setup
+db.initDb();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -56,7 +43,7 @@ app.use(function (_req, _res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, _next) {
+app.use(function (err, req, res) {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};

@@ -8,9 +8,12 @@ module.exports = {
 		if (fileExists.sync(envFileLocation)) {
 			env(envFileLocation);
 		} else {
-			console.log('Error: envFile not found');
+			console.log();
 			console.log(envFileLocation);
-			process.exit(-1);
+			throw new Error(
+				'Error: envFile not found at path ',
+				envFileLocation
+			);
 		}
 	},
 };
