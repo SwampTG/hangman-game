@@ -3,13 +3,11 @@ const database = require('./../config/database');
 
 loadEnv.get();
 
-database.registerModels();
-
 export function getHangmanCollectionName(){
-	return `${process.env.MONGO_DB_DATABASE}`.toString();
+	return `${process.env.HANGMAN_GAME_COLLECTION}`.toString();
 }
 export function getUserCollectionName() {
-	return `${process.env.HANGMAN_USER_DB}`.toString();
+	return `${process.env.HANGMAN_USER_COLLECTION}`.toString();
 }
 
 export function getGameCollection() {
@@ -19,5 +17,6 @@ export function getUserCollection() {
 	return database.getCollections().user;
 }
 export function initDb() {
-		database.initDb();
+	database.initDb();
+	database.registerModels();
 }

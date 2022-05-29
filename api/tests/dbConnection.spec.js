@@ -33,5 +33,15 @@ describe('Server must interact with Mongo database', () => {
 		mongoConn.db.collections({}, (_err, collects) => {
 			expectCollectionsNames(collects);
 		});
+
+		const expectCollectionsNames = (collections) => {
+			let collectionsNames = collections.map(
+				(coll) => coll.collectionName
+			);
+
+			expect(
+				collectionsNames.includes(process.env.MONGO_TEST_DATABASE)
+			).be.true;
+		};
 	});
 });

@@ -8,8 +8,9 @@ loadEnv.get();
 
 var dbHost = process.env.MONGO_DB_HOST;
 var dbPort = process.env.MONGO_DB_PORT;
-var dbName = process.env.MONGO_DB_DATABASE;
-var userDb = process.env.HANGMAN_USER_DB;
+var dbName = process.env.MONGO_DB_CONNECTION;
+var userDb = process.env.HANGMAN_USER_COLLECTION;
+var gameDb = process.env.HANGMAN_GAME_COLLECTION;
 
 var defaultConnection = new mongoose.Connection();
 export function mountDbUri(host, port, name) {
@@ -26,14 +27,14 @@ export async function defaultConnect() {
 
 export function getCollections() {
 	return {
-		game: getDefaultConnection().collection(dbName),
+		game: getDefaultConnection().collection(gameDb),
 		user: getDefaultConnection().collection(userDb),
 	};
 }
 
 export function registerModels() {
-	models.registerModels(dbName, userSchema);
-	models.registerModels(userDb, gameSchema);
+	models.registerModels(gameDb, gameSchema);
+	models.registerModels(userDb, userSchema);
 }
 
 export function configCollections() {
