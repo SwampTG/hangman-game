@@ -9,7 +9,6 @@ var userCollection = {};
 
 describe('The database is correctly manipulated', () => {
 	beforeEach(function stablishCollections() {
-		db.initDb();
 		gameCollection = db.getGameCollection();
 		userCollection = db.getUserCollection();
 	});

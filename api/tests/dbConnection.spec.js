@@ -15,7 +15,6 @@ var port = process.env.MONGO_DB_PORT;
 var db = process.env.MONGO_TEST_DATABASE;
 
 beforeEach(async function connectToDatabase() {
-	database.initDb();
 	mongoConn = database.getDefaultConnection();
 });
 
@@ -29,7 +28,7 @@ describe('Server must interact with Mongo database', () => {
 	it('Creates and uses the specified collection', async () => {
 		mongoConn
 			.collection(process.env.MONGO_TEST_DATABASE)
-			.insertOne({ name: 'test' });
+			.insertOne({ name: 'test', date: Date.now()});
 		mongoConn.db.collections({}, (_err, collects) => {
 			expectCollectionsNames(collects);
 		});
@@ -40,7 +39,7 @@ describe('Server must interact with Mongo database', () => {
 			);
 
 			expect(
-				collectionsNames.includes(process.env.MONGO_TEST_DATABASE)
+				collectionsNames.includes(process.env.MONGO_TEST_DATABASE), 'Inclui a base de testes'
 			).be.true;
 		};
 	});

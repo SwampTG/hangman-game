@@ -4,7 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
-const db = require('./config/database');
 const loadEnv = require('./config/env');
 
 loadEnv.get();
@@ -19,7 +18,6 @@ var app = express();
 // };
 
 // view engine setup
-db.initDb();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 

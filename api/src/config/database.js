@@ -13,6 +13,7 @@ var userDb = process.env.HANGMAN_USER_COLLECTION;
 var gameDb = process.env.HANGMAN_GAME_COLLECTION;
 
 var defaultConnection = new mongoose.Connection();
+
 export function mountDbUri(host, port, name) {
 	return `mongodb://${host}:${port}/${name}`;
 }
@@ -45,15 +46,21 @@ export function configCollections() {
 	}
 }
 
-export function initDb() {
+export async function initDb() {
 	defaultConnect()
 		.then((conn) => {
 			defaultConnection = conn;
 			configCollections();
 		})
-		.catch((err) => console.log(err));
+		.catch((err) => { console.log('Default mongo connection failed: ',err) });
 }
 
 export function getDefaultConnection() {
 	return defaultConnection;
 }
+
+const init = async () => {
+	await initDb();
+};
+
+init();
