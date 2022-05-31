@@ -4,33 +4,21 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
-var mongo = require('./config/database');
 const loadEnv = require('./config/env');
+var bodyparser = require('body-parser');
 
 loadEnv.get();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var gameRouter = require('./routes/game');
 
 var app = express();
-const dbHost = process.env.MONGO_DB_HOST;
-const dbPort = process.env.MONGO_DB_PORT;
-const dbName = process.env.MONGO_DB_DATABASE;
+var urlencodedParser = bodyparser.urlencoded({ extended: false });
 
-console.log(mongo.mountDbUri(dbHost, dbPort, ''));
-
-mongo
-	.connect(
-		mongo.mountDbUri(dbHost, dbPort, '') +
-			'?directConnection=true&serverSelectionTimeoutMS=2000'
-	)
-	.asPromise()
-	.then(async (conn) => {
-    console.log('Connection state: ', conn.readyState);
-    const collection = await conn.collection(process.env.MONGO_DB_DATABASE);
-    console.log('db connect: ', collection.collectionName);
-	});
-
+// const setModels = (collection) => {
+// 	models.saveModels(collection);
+// };
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,16 +27,13 @@ app.set('view engine', 'jade');
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
-app.use(
-	express.urlencoded({
-		extended: false,
-	})
-);
+app.use(urlencodedParser);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/v1/game', gameRouter)
+app.use('/v1/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (_req, _res, next) {
@@ -56,7 +41,7 @@ app.use(function (_req, _res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, _next) {
+app.use(function (err, req, res) {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};

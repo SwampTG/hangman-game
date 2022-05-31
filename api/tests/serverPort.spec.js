@@ -2,7 +2,7 @@ import { port } from '../src/bin/www';
 import { expect } from 'chai';
 
 let testEnv = {}
-testEnv.port = '3000';
+testEnv.port = process.env.PORT;
 
 // eslint-disable-next-line no-undef
 describe('Server should be running correctly', () => {
