@@ -5,13 +5,16 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 const loadEnv = require('./config/env');
+var bodyparser = require('body-parser');
 
 loadEnv.get();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var gameRouter = require('./routes/game');
 
 var app = express();
+var urlencodedParser = bodyparser.urlencoded({ extended: false });
 
 // const setModels = (collection) => {
 // 	models.saveModels(collection);
@@ -24,16 +27,13 @@ app.set('view engine', 'jade');
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
-app.use(
-	express.urlencoded({
-		extended: false,
-	})
-);
+app.use(urlencodedParser);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/v1/game', gameRouter)
+app.use('/v1/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (_req, _res, next) {

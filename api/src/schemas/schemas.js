@@ -7,14 +7,30 @@ var userSchema = new mongoose.Schema({
 
 module.exports = {
 	gameSchema: new mongoose.Schema({
-		word: String,
-		chosenLetters: [String],
-		owner: Object,
+		word: {
+			type: String,
+			required: true,
+			maxlength: 50,
+		},
+		chosenLetters: {
+			type: [String],
+			default: '',
+		},
+		owner: userSchema,
 		players: [userSchema],
-		turnsPassed: Number,
-		max: Number,
-		createdAt: Date,
+		turnsPassed: {
+			type: Number,
+			default: 0,
+		},
+		max: {
+			type: Number,
+			default: 5,
+		},
+		createdAt: {
+			type: Date,
+			default: Date.now(),
+		},
 		startedAt: Date,
 	}),
-	userSchema
+	userSchema,
 };
