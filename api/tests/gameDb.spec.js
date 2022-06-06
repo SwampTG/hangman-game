@@ -54,4 +54,80 @@ describe('The system must manage game info', () => {
 		expect(idInserted).to.be.equal(10);
 		expect(stubs.collectStub.called).to.be.true;
 	});
+
+	it('searches at the database by id', () => {
+		stubs.collectStub.returns({
+			findOne({ id = 500 }) {
+				return { _id: 500 + id };
+			},
+		});
+
+		gameDb
+			.findGameById({ id: 60 })
+			.then(data => {
+				expect(data._id).to.be.equals(560)
+			})
+			.catch(err => { console.error(err) })
+
+		expect(stubs.collectStub.calledTwice).to.be.true;
+	});
+
+	it('searches at the database by word', () => {
+		stubs.collectStub.returns({
+			find({ word = 'test' }) {
+				return [{ _id: 500, word: word }];
+			},
+		});
+
+		gameDb
+			.findGameByWord({ word: 'antetegemon' })
+			.forEach(data => {
+				expect(data._id).to.be.equals(500)
+				expect(data.word).to.contain({ word: 'antetegemon' });
+			});
+
+
+		expect(stubs.collectStub.calledTwice).to.be.true;
+	});
+
+	const toArray = sinon.stub().returns([
+		{ _id: 500, word: 'word' },
+		{ _id: 10, word: 'test' },
+	])
+
+	it('gets all the games', (done) => {
+		stubs.collectStub.returns({
+			find() {
+				return { toArray };
+			},
+		});
+
+		gameDb
+			.getAll()
+			.then((data) => {
+				expect(Array.isArray(data)).to.be.true;
+				expect(data.length).to.be.greaterThanOrEqual(2);
+				let mapData = data.map(dt => dt.word);
+				expect(mapData).to.contain('word');
+				done();
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+
+		expect(stubs.collectStub.calledTwice).to.be.true;
+	});
+
+	it('removes a game by id', () => {
+		stubs.collectStub.returns({
+			deleteOne(id) {
+				return id;
+			}
+		});
+		console.log(gameDb.deleteGameById(15));
+		expect(gameDb.deleteGameById(15)).to.eql({
+			_id: 15,
+		});
+		expect(stubs.collectStub.called).to.be.true;
+	})
 });
