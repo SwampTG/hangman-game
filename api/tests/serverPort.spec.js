@@ -1,4 +1,5 @@
 import { port } from '../src/bin/www';
+// eslint-disable-next-line node/no-unpublished-import
 import { expect } from 'chai';
 
 let testEnv = {}
